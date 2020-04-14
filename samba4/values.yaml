@@ -9,38 +9,36 @@ image:
   # if you want to use that.  Just remember it doesn't contain the script
   # so set the flag to true also.  That said, it only has one tag, and isn't
   # an automated build so you might be better with the below image.
-  repository: imartyn/samba4k8s
+  repository: fuziontech/samba 
   lacksK8sScript: false
-  #repository: stanback/alpine-samba
-  #lacksK8sScript: true
-  tag: stable
+  # repository: stanback/alpine-samba
+  # lacksK8sScript: true
+  tag: latest 
   pullPolicy: IfNotPresent
 
-nameOverride: ""
+nameOverride: "bigdisk"
 fullnameOverride: ""
 
 samba:
   global:
     workgroup: WORKGROUP
   share: {}
-  users: []
+  users: 
+    - username: james
+      password: crapsauce
 
 persistence:
-  enabled: false
+  enabled: true 
   type: pvc
   pvc:
-    accessMode: readWriteOnce
-    size: 8Gi
-    storageClass: "-"
-  other:
-    emptyDir: {}
+    existingClaim: samba
 
 privatePersistence:
-  enabled: false
+  enabled: false 
   pvc:
-    accessMode: readWriteOnce
+    accessMode: ReadWriteOnce
     size: 20Mi
-    storageClass: "-"
+    storageClass: "microk8s-hostpath"
   other:
     emptyDir: {}
 

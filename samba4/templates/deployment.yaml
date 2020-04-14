@@ -13,9 +13,6 @@ metadata:
   annotations:
     checksum/smbconf: {{ $smbconfchecksum }}
     checksum/users: {{ $userschecksum }}
-{{ if .Values.image.lacksK8sScript -}}
-    checksum/script: {{ $scriptchecksum }}
-{{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -30,9 +27,6 @@ spec:
       annotations:
         checksum/smbconf: {{ $smbconfchecksum }}
         checksum/users: {{ $userschecksum }}
-{{- if .Values.image.lacksK8sScript }}
-        checksum/script: {{ $scriptchecksum }}
-{{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -60,10 +54,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
-{{- if .Values.image.lacksK8sScript }}
+{{ if .Values.image.lacksK8sScript }}
           - mountPath: /configmaps/scripts
             name: scripts
-{{- end }}
+{{ end }}
           - mountPath: /secrets
             name: users
           - mountPath: /etc/samba/smb.conf
@@ -86,7 +80,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-{{ if .Values.image.lacksK8sScript -}}
+{{ if .Values.image.lacksK8sScript }}
       - name: scripts
         configMap:
           name: {{ include "samba4.fullname" . }}-packagescripts
@@ -94,7 +88,7 @@ spec:
           items:
           - key: k8s.sh
             path: k8s.sh
-{{- end }}
+{{ end }}
       - name: smbconf
         configMap:
           name: {{ include "samba4.fullname" . }}-smbconf
