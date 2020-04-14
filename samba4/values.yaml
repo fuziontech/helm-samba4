@@ -46,8 +46,8 @@ livenessProbe:
   enabled: true
 
 service:
-  type: ClusterIP
-  port: 445
+  type: NodePort 
+  port: 30445
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
